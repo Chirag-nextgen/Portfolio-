@@ -1,0 +1,46 @@
+---
+title: 'Motion with a Purpose: Animation as Information'
+description: 'Why the best interface animation is the kind you never consciously notice — and a practical framework for designing it.'
+date: '2025-11-18'
+tags: ['Motion', 'UX']
+---
+
+There’s a moment, early in every project, where someone asks for “a bit more delight.” It’s a trap. Delight isn’t a layer you spray on at the end — it’s a byproduct of motion that *means something*.
+
+The fastest way to make an interface feel cheap is to animate for animation’s sake. The fastest way to make it feel expensive is to make every transition carry information.
+
+## Motion answers three questions
+
+Every animation worth shipping answers at least one of these:
+
+- **Where did this come from?** A panel that slides in from the edge it’s anchored to.
+- **Where did it go?** A deleted row that collapses rather than blinking out.
+- **What’s related to what?** Shared-element transitions that carry an object across routes.
+
+If a motion can’t answer one of those, it’s decoration. Decoration has a budget, and that budget is small.
+
+> The goal isn’t motion the user notices. It’s motion that means they never have to think.
+
+## Physics over duration
+
+Easing curves are fine. Springs are better. A `duration: 300ms` animation always takes 300ms, no matter how far the object travels. A spring takes as long as the *distance* demands — which is exactly how the physical world behaves, and exactly what our intuition expects.
+
+```ts
+// Distance-aware, interruptible, and it just feels right.
+const transition = {
+  type: 'spring',
+  stiffness: 380,
+  damping: 30,
+  mass: 0.6,
+};
+```
+
+The bonus: springs are interruptible. Click again mid-animation and the motion redirects from its current velocity instead of snapping or queueing. That responsiveness is most of what “premium” feels like.
+
+## Respect the people who opt out
+
+None of this matters if it makes someone sick. `prefers-reduced-motion` isn’t an edge case — it’s a contract. Honour it by removing *transforms and parallax*, not by removing *feedback*. A reduced-motion user should still know their click registered; they just shouldn’t have to watch the world slide.
+
+---
+
+Motion is a language. Spend your words carefully, and the interface starts to feel less like software and more like a place.

@@ -1,0 +1,45 @@
+---
+title: 'Performance Is a Feature, Not a Cleanup Task'
+description: 'How treating Core Web Vitals as a product requirement — with a budget set before the first component — changes everything.'
+date: '2025-09-04'
+tags: ['Performance', 'Engineering']
+---
+
+Performance work has an image problem. It gets scheduled as “tech debt,” squeezed into the last sprint, and measured only after users complain. By then the architecture has already decided how slow you’re allowed to be.
+
+The teams that ship genuinely fast interfaces do one thing differently: they set the budget **before** they write the first line.
+
+## A budget is a design constraint
+
+“Make it fast” is not a budget. “Largest Contentful Paint under 2.0s on a mid-tier Android over 4G” is. Once that number exists, it does the arguing for you:
+
+- That hero video? It blows the budget. Cut it or make it a poster.
+- A 600KB font stack? Subset it, or pick fewer weights.
+- A third-party widget that adds 300ms of blocking script? It needs to earn its place.
+
+The budget turns subjective debates into arithmetic.
+
+## Where the time actually goes
+
+In modern React apps, the usual suspects are predictable:
+
+1. **Hydration of things that never needed to be interactive.** Server Components and islands exist precisely so a marketing paragraph doesn’t ship a runtime.
+2. **Main-thread contention.** Heavy parsing, aggregation, or layout thrash that should live in a Web Worker.
+3. **Images.** Still, in 2025, the single biggest lever on most sites. Right format, right size, `priority` only where it counts.
+
+```ts
+// Move the expensive work off the thread that paints.
+const worker = new Worker(new URL('./aggregate.worker.ts', import.meta.url));
+worker.postMessage(snapshot);
+worker.onmessage = (e) => paint(e.data);
+```
+
+## Measure like a user, not like a server
+
+Your laptop on office wifi is a lie. Profile on a throttled CPU and a real mid-tier device, and watch the field data — lab scores are a smoke test, not the truth.
+
+> Fast is the most accessible feature you can ship. It helps the oldest phone, the weakest signal, and the most impatient human equally.
+
+---
+
+Build the budget into the definition of done, and performance stops being a heroic rescue mission. It just becomes how the thing is made.
