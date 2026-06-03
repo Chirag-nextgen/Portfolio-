@@ -1,0 +1,46 @@
+---
+title: 'Shaders for Skeptics: WebGL Without the Gimmicks'
+description: 'A pragmatic case for tasteful GPU-driven visuals on the web — and how to ship them without tanking performance or accessibility.'
+date: '2025-06-22'
+tags: ['WebGL', 'Creative Dev']
+---
+
+WebGL on a portfolio is usually a red flag. It signals a developer who reached for spectacle before substance — a spinning torus, a particle field, a frame rate that drops the moment you scroll.
+
+It doesn’t have to be that way. Used with restraint, a fragment shader is just another rendering primitive — one that happens to run on thousands of cores in parallel.
+
+## When a shader earns its place
+
+Reach for the GPU when the effect is **continuous and procedural** — something that would be absurd to express as DOM:
+
+- A flowing gradient that never repeats.
+- A subtle distortion that responds to the cursor.
+- A data visualization plotting hundreds of thousands of points.
+
+If the same result can be achieved with a CSS gradient and a `blur()`, use the CSS gradient. The best engineers know which tool *not* to use.
+
+## The whole thing can be one quad
+
+You don’t need a scene graph for an ambient background. One full-screen triangle and a fragment shader is enough — no geometry, no lighting, no three.js.
+
+```glsl
+// Domain-warped noise: organic motion from a handful of instructions.
+float f = fbm(uv + 1.8 * fbm(uv + time));
+vec3 color = mix(base, accent, smoothstep(0.2, 0.8, f));
+```
+
+That’s a living gradient in a few lines, running comfortably at 60fps on a phone.
+
+## Degrade like you mean it
+
+This is the part the gimmicks skip. A tasteful WebGL accent must have a tasteful fallback:
+
+- **No WebGL context?** Render a static CSS gradient that looks intentional.
+- **`prefers-reduced-motion`?** Freeze it. Don’t even create the context.
+- **Low power / small screen?** Drop the device pixel ratio and the octave count.
+
+> A shader you can’t turn off isn’t a feature — it’s a liability with good lighting.
+
+---
+
+GPU visuals aren’t inherently gaudy. Gaudy is a choice. Pick effects that serve the composition, give every one of them an off-ramp, and WebGL becomes what it should be: a quiet finishing touch, not the whole act.
