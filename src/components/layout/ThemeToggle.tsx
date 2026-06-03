@@ -13,7 +13,9 @@ export function ThemeToggle() {
 
   useEffect(() => setMounted(true), []);
 
-  const isDark = resolvedTheme === 'dark';
+  // Before hydration `resolvedTheme` is undefined; assume the default (dark)
+  // so the server and first client render agree and the label stays correct.
+  const isDark = mounted ? resolvedTheme === 'dark' : true;
 
   return (
     <button

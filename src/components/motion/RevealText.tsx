@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Fragment, type ElementType } from 'react';
+import { Fragment, useMemo, type ElementType } from 'react';
 import { cn } from '@/lib/utils';
 import { EASE_EXPO } from '@/lib/motion';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
@@ -30,7 +30,9 @@ export function RevealText({
   stagger = 0.045,
   whileInView = true,
 }: RevealTextProps) {
-  const Tag = motion(as as ElementType);
+  // Create the motion component once per tag (motion() during render is
+  // deprecated and re-creates the component on every render).
+  const Tag = useMemo(() => motion.create(as as ElementType), [as]);
   const reduced = usePrefersReducedMotion();
   const words = text.split(' ');
 
